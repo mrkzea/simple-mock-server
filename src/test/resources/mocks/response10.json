@@ -1,0 +1,25 @@
+{
+
+    "name": "SomeFootbalall and some Hokey",
+    "description": "This rule retrieves the feeds for Football and Hokey",
+    "substitute": "none",
+    "ruleId": 2008,
+    "groups": [
+        {
+            "id": 1000096999,
+            "name": "Matches",
+            "nrOfEvents": 3,
+            "betOffer": "3",
+            "criterion": "1000505272",
+            "path":"/1000093190/10000933811000096999"
+        },
+        {
+            "id": 1000096111,
+            "name": "Matches",
+            "nrOfEvents": 3,
+            "betOffer": "3",
+            "criterion": "1000505272",
+            "path":"/1000093190/1000093381/1000096111"
+        }
+    ]
+}

@@ -1,0 +1,261 @@
+{
+
+    "events": [
+        {
+            "id": 1001247826,
+            "name": "Bayern München - Chelsea",
+            "homeName": "Bayern München",
+            "awayName": "Chelsea",
+            "start": "2012-05-19T18:45Z",
+            "group": "Matches",
+            "groupId": 1000096999,
+            "type": "ET_MATCH",
+            "nonLiveBoCount": 25,
+            "sportId": 1000093190,
+            "sport": "FOOTBALL",
+            "boUri": "/external-api/api/v2/ub/betoffer/event/1001247826.json"
+        }
+    ],
+    "betoffers": [
+        {
+            "id": 1009036228,
+            "closed": "2012-05-19T18:45Z",
+            "criterion": {
+                "id": 1001159666,
+                "label": "Draw No Bet"
+            },
+            "betOfferType": {
+                "id": 9,
+                "name": "Side bets"
+            },
+            "eventId": 1001247826,
+            "outcomes": [
+                {
+                    "id": 32000821,
+                    "label": "1",
+                    "odds": 1250,
+                    "type": "OT_ONE",
+                    "changedDate": "2012-05-01T13:43:08Z"
+                },
+                {
+                    "id": 32000823,
+                    "label": "2",
+                    "odds": 3600,
+                    "type": "OT_TWO",
+                    "changedDate": "2012-05-01T13:43:08Z"
+                }
+            ]
+        },
+        {
+            "id": 1009036238,
+            "closed": "2012-05-19T18:45Z",
+            "criterion": {
+                "id": 1000316018,
+                "label": "Half Time"
+            },
+            "betOfferType": {
+                "id": 9,
+                "name": "Side bets"
+            },
+            "eventId": 1001247826,
+            "outcomes": [
+                {
+                    "id": 32000894,
+                    "label": "1",
+                    "odds": 2300,
+                    "type": "OT_ONE",
+                    "changedDate": "2012-05-01T13:44:21Z"
+                },
+                {
+                    "id": 32000895,
+                    "label": "X",
+                    "odds": 2200,
+                    "type": "OT_CROSS",
+                    "changedDate": "2012-05-01T13:44:21Z"
+                },
+                {
+                    "id": 32000896,
+                    "label": "2",
+                    "odds": 5250,
+                    "type": "OT_TWO",
+                    "changedDate": "2012-05-01T13:44:21Z"
+                }
+            ]
+        },
+        {
+            "id": 1009036240,
+            "closed": "2012-05-19T18:45Z",
+            "criterion": {
+                "id": 1000196507,
+                "label": "Both Teams to Score (1=Yes, 2=No)"
+            },
+            "betOfferType": {
+                "id": 9,
+                "name": "Side bets"
+            },
+            "eventId": 1001247826,
+            "outcomes": [
+                {
+                    "id": 32000906,
+                    "label": "1",
+                    "odds": 1880,
+                    "type": "OT_ONE",
+                    "changedDate": "2012-05-01T13:44:21Z"
+                },
+                {
+                    "id": 32000908,
+                    "label": "2",
+                    "odds": 1800,
+                    "type": "OT_TWO",
+                    "changedDate": "2012-05-01T13:44:21Z"
+                }
+            ]
+        },
+        {
+            "id": 1009036245,
+            "closed": "2012-05-19T18:45Z",
+            "criterion": {
+                "id": 1000196505,
+                "label": "Home Team to Score (1=Yes, 2=No)"
+            },
+            "betOfferType": {
+                "id": 9,
+                "name": "Side bets"
+            },
+            "eventId": 1001247826,
+            "outcomes": [
+                {
+                    "id": 32000917,
+                    "label": "1",
+                    "odds": 1150,
+                    "type": "OT_ONE",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                },
+                {
+                    "id": 32000919,
+                    "label": "2",
+                    "odds": 4900,
+                    "type": "OT_TWO",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                }
+            ]
+        },
+        {
+            "id": 1009036246,
+            "closed": "2012-05-19T18:45Z",
+            "criterion": {
+                "id": 1000196506,
+                "label": "Away Team to Score (1=Yes, 2=No)"
+            },
+            "betOfferType": {
+                "id": 9,
+                "name": "Side bets"
+            },
+            "eventId": 1001247826,
+            "outcomes": [
+                {
+                    "id": 32000920,
+                    "label": "1",
+                    "odds": 1550,
+                    "type": "OT_ONE",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                },
+                {
+                    "id": 32000922,
+                    "label": "2",
+                    "odds": 2250,
+                    "type": "OT_TWO",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                }
+            ]
+        },
+        {
+            "id": 1009036250,
+            "closed": "2012-05-19T18:45Z",
+            "criterion": {
+                "id": 1000105110,
+                "label": "First Goal. Draw No Bet"
+            },
+            "betOfferType": {
+                "id": 9,
+                "name": "Side bets"
+            },
+            "eventId": 1001247826,
+            "outcomes": [
+                {
+                    "id": 32000929,
+                    "label": "1",
+                    "odds": 1440,
+                    "type": "OT_ONE",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                },
+                {
+                    "id": 32000931,
+                    "label": "2",
+                    "odds": 2650,
+                    "type": "OT_TWO",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                }
+            ]
+        },
+        {
+            "id": 1009036251,
+            "closed": "2012-05-19T18:45Z",
+            "criterion": {
+                "id": 1000196540,
+                "label": "Home Team to Score in both halves (1=Yes, 2=No)"
+            },
+            "betOfferType": {
+                "id": 9,
+                "name": "Side bets"
+            },
+            "eventId": 1001247826,
+            "outcomes": [
+                {
+                    "id": 32000932,
+                    "label": "1",
+                    "odds": 2850,
+                    "type": "OT_ONE",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                },
+                {
+                    "id": 32000934,
+                    "label": "2",
+                    "odds": 1350,
+                    "type": "OT_TWO",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                }
+            ]
+        },
+        {
+            "id": 1009036252,
+            "closed": "2012-05-19T18:45Z",
+            "criterion": {
+                "id": 1000316895,
+                "label": "Away Team to Score in both halves (1=Yes, 2=No)"
+            },
+            "betOfferType": {
+                "id": 9,
+                "name": "Side bets"
+            },
+            "eventId": 1001247826,
+            "outcomes": [
+                {
+                    "id": 32000935,
+                    "label": "1",
+                    "odds": 7000,
+                    "type": "OT_ONE",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                },
+                {
+                    "id": 32000937,
+                    "label": "2",
+                    "odds": 1080,
+                    "type": "OT_TWO",
+                    "changedDate": "2012-05-01T13:44:22Z"
+                }
+            ]
+        }
+    ]
+
+}

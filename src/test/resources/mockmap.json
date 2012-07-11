@@ -1,0 +1,58 @@
+[
+    {
+        "location": "/server/response1.json",
+        "response": "mocks/response1.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response2.json",
+        "response": "mocks/response2.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response3.json",
+        "response": "mocks/response3.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response4.json",
+        "response": "mocks/response4.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response4.json",
+        "response": "mocks/response4.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response5.json",
+        "response": "mocks/response5.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response6.json",
+        "response": "mocks/response6.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response7.json",
+        "response": "mocks/response7.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response8.json",
+        "response": "mocks/response8.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response9.json",
+        "response": "mocks/response9.json",
+        "contentType": "application/json"
+    },
+    {
+        "location": "/server/response10.json",
+        "response": "mocks/response10.json",
+        "contentType": "application/json"
+    }
+]
+

@@ -1,0 +1,65 @@
+{
+    "createdAt": "2008-08-08T20:08Z",
+    "betType": "1x2",
+    "contests": [
+        {
+            "events": [
+                {
+                    "id": 1001182878,
+                    "name": "England - Ukraine",
+                    "awayName": "Ukraine",
+                    "homeName": "England",
+                    "start": "2012-06-19T18:45Z",
+                    "group": "Matches",
+                    "groupId": 2000052384,
+                    "type": "ET_MATCH",
+                    "liveBetOffers": true,
+                    "nonLiveBoCount": 1,
+                    "sportId": 1000093190,
+                    "sport": "FOOTBALL",
+                    "boUri": "/external-api/api/v2/ub/betoffer/event/1001182878.json",
+                    "betoffers": [
+                        {
+                            "id": 1008422642,
+                            "closed": "2012-06-19T18:45Z",
+                            "criterion": {
+                                "id": 1000100078,
+                                "label": "Regular time",
+                                "isDefault": true
+                            },
+                            "betOfferType": {
+                                "id": "2",
+                                "name": "Match"
+                            },
+                            "eventId": 1001182878,
+                            "outcomes": [
+                                {
+                                    "id": 29486617,
+                                    "label": "1",
+                                    "odds": 1950,
+                                    "type": "OT_ONE",
+                                    "changedDate": "2012-06-06T15:52:55Z"
+                                },
+                                {
+                                    "id": 29486618,
+                                    "label": "X",
+                                    "odds": 3400,
+                                    "type": "OT_CROSS",
+                                    "changedDate": "2012-06-06T15:52:55Z"
+                                },
+                                {
+                                    "id": 29486619,
+                                    "label": "2",
+                                    "odds": 3800,
+                                    "type": "OT_TWO",
+                                    "changedDate": "2012-06-06T15:52:55Z"
+                                }
+                            ]
+                        }
+                    ],
+                    "participants": [ ]
+                }
+            ]
+        }
+    ]
+}

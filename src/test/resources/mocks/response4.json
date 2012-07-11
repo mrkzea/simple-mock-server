@@ -1,0 +1,59 @@
+{
+
+    "preMatchEvents": [
+        {
+            "preMatchGroup": [
+                {
+                    "events": [
+                        {
+                            "id": 1001247826,
+                            "name": "BayernMünchen-Chelsea",
+                            "homeName": "BayernMünchen",
+                            "awayName": "Chelsea",
+                            "start": "2012-05-19T18:45Z",
+                            "group": "Matches",
+                            "groupId": 1000096999,
+                            "type": "ET_MATCH",
+                            "nonLiveBoCount": 25,
+                            "sportId": 1000093190,
+                            "sport": "FOOTBALL",
+                            "boUri": "/external-api/api/v2/ub/betoffer/event/1001247826.json"
+                        }
+                    ],
+                    "betoffers": [
+                        {
+                            "id": 1009036245,
+                            "closed": "2012-05-19T18:45Z",
+                            "criterion": {
+                                "id": 1000196505,
+                                "label": "HomeTeamtoScore(1=Yes,2=No)"
+                            },
+                            "betOfferType": {
+                                "id": 9,
+                                "name": "Sidebets"
+                            },
+                            "eventId": 1001247826,
+                            "outcomes": [
+                                {
+                                    "id": 32000917,
+                                    "label": "1",
+                                    "odds": 1150,
+                                    "type": "OT_ONE",
+                                    "changedDate": "2012-05-01T13:44:22Z"
+                                },
+                                {
+                                    "id": 32000919,
+                                    "label": "2",
+                                    "odds": 4900,
+                                    "type": "OT_TWO",
+                                    "changedDate": "2012-05-01T13:44:22Z"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+
+}

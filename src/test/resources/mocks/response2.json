@@ -1,0 +1,15 @@
+{
+
+    "name": "All Football",
+    "description": "This rule retrieves Really big json, only limit -nr of events",
+    "substitute": "none",
+    "groups": [
+        {
+            "id": 1000093190,
+            "name": "All Football",
+            "path":"/1000093190",
+            "betOffer": "2",
+            "criterion": "1000100078"
+        }
+    ]
+}

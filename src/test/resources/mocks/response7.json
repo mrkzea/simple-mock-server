@@ -1,0 +1,41 @@
+{
+
+    "name": "SomeFromFootballPlusEverythingFromHokey",
+    "description": "Champions league, plus all from england plus all from ice hokey",
+    "substitute": "none",
+    "groups": [
+        {
+            "id": 1000096999,
+            "name": "Matches",
+            "nrOfEvents": 11,
+            "betOffer": "6",
+            "criterion": "1000100939",
+            "path": "/1000093190/1000093381/1000096999"
+        },
+        {
+            "id": 1000097003,
+            "name": "Tournament Bets",
+            "nrOfEvents": 5,
+            "betOffer": "4",
+            "criterion": "1000100089",
+            "path": "/1000093190/1000093381/1000097003"
+
+        },
+        {
+            "id": 1000461733,
+            "name": "England",
+            "nrOfEvents": 25,
+            "betOffer": "9",
+            "criterion": "1000270313",
+            "path": "/1000093190/1000461733"
+        },
+        {
+            "id": 1000093191,
+            "name": "Ice Hockey",
+            "nrOfEvents": 10,
+            "betOffer": "1",
+            "criterion": "1001105802",
+            "path": "/1000093191"
+        }
+    ]
+}

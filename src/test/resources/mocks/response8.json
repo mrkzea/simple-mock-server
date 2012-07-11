@@ -1,0 +1,62 @@
+{
+
+    "events": [
+        {
+            "id": 1001249817,
+            "name": "AC Horsens - FC Copenhagen",
+            "homeName": "AC Horsens",
+            "awayName": "FC Copenhagen",
+            "start": "2012-05-17T16:00Z",
+            "group": "DBU Pokalen",
+            "groupId": 1000443738,
+            "type": "ET_MATCH",
+            "nonLiveBoCount": 65,
+            "sportId": 1000093190,
+            "sport": "FOOTBALL",
+            "boUri": "/external-api/api/v2/ub/betoffer/event/1001249817.json"
+        },
+        {
+            "id": 1001258141,
+            "name": "Vasco da Gama-RJ - Corinthians-SP",
+            "homeName": "Vasco da Gama-RJ",
+            "awayName": "Corinthians-SP",
+            "start": "2012-05-17T00:50Z",
+            "group": "Matches",
+            "groupId": 1000097035,
+            "type": "ET_MATCH",
+            "nonLiveBoCount": 3,
+            "sportId": 1000093190,
+            "sport": "FOOTBALL",
+            "boUri": "/external-api/api/v2/ub/betoffer/event/1001258141.json"
+        },
+        {
+            "id": 1001256431,
+            "name": "Bayern München - Chelsea",
+            "homeName": "Bayern München",
+            "awayName": "Chelsea",
+            "start": "2012-05-19T18:45Z",
+            "group": "Matches Extended",
+            "groupId": 2000053508,
+            "type": "ET_MATCH",
+            "liveBetOffers": true,
+            "nonLiveBoCount": 59,
+            "sportId": 1000093190,
+            "sport": "FOOTBALL",
+            "boUri": "/external-api/api/v2/ub/betoffer/event/1001256431.json"
+        },
+        {
+            "id": 1001250506,
+            "name": "Eredivisie Promotion/Relegation 2012",
+            "homeName": "Eredivisie Promotion/Relegation 2012",
+            "start": "2012-05-20T12:30Z",
+            "group": "Season Bets",
+            "groupId": 1000095771,
+            "type": "ET_COMPETITION",
+            "nonLiveBoCount": 1,
+            "sportId": 1000093190,
+            "sport": "FOOTBALL",
+            "boUri": "/external-api/api/v2/ub/betoffer/event/1001250506.json"
+        }
+    ]
+
+}
