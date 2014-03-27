@@ -1,4 +1,4 @@
-package com.simplemockserver.singlethreaded;
+package net.mrkzea.mockserver;
 
 import junit.framework.Assert;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -21,7 +21,7 @@ public class SimpleMockServerTests {
 
     protected ObjectMapper mapper;
 
-    public SimpleMockServerTests(){
+    public SimpleMockServerTests() {
         mapper = new ObjectMapper();
         mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
     }
@@ -29,46 +29,46 @@ public class SimpleMockServerTests {
     private static SimpleMockServer mockServer;
 
 
-    @Before
-    public void setUp() throws Exception{
-        if (mockServer == null){
-            startMockServer(10000, 200);
-        }
-    }
+//    @Before
+//    public void setUp() throws Exception {
+//        if (mockServer == null) {
+//            startMockServer(10000, 200);
+//        }
+//    }
 
-    public void assertTest(String url, String expectedFile){
+    public void assertTest(String url, String expectedFile) {
         String request = requestUrl(url);
         Assert.assertEquals(readStream(getClass().getClassLoader().getResourceAsStream(expectedFile)), request);
     }
 
 
     @Test
-    public void testSingleThreadedServer(){
+    public void testSingleThreadedServer() {
         File dir = new File(getClass().getClassLoader().getResource("mocks").getFile());
         String[] children = dir.list();
-        for(String expectedFile : children){
+        for (String expectedFile : children) {
             assertTest("/server/" + expectedFile, "mocks/" + expectedFile);
         }
     }
 
 
     @Test
-    public void testSingleThreadedWithMultipleThreads() throws Exception{
+    public void testSingleThreadedWithMultipleThreads() throws Exception {
         int nrOfThreads = 10;
         final CountDownLatch startGate = new CountDownLatch(1);
         final CountDownLatch endGate = new CountDownLatch(nrOfThreads);
 
-        for(int i = 0 ; i < nrOfThreads ; i++){
-            Thread t = new Thread(){
-                public void run(){
-                    try{
+        for (int i = 0; i < nrOfThreads; i++) {
+            Thread t = new Thread() {
+                public void run() {
+                    try {
                         startGate.await();
-                        try{
+                        try {
                             testSingleThreadedServer();
-                        }finally {
+                        } finally {
                             endGate.countDown();
                         }
-                    }catch(InterruptedException e){
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
@@ -78,32 +78,35 @@ public class SimpleMockServerTests {
         long start = System.currentTimeMillis();
         startGate.countDown();
         endGate.await();
-        long duration= System.currentTimeMillis() - start;
+        long duration = System.currentTimeMillis() - start;
         System.out.println(duration);
     }
 
 
 
-    public void startMockServer(int port, int delay) throws Exception{
-//        if(mockServer != null && mockServer.isAlive()) stopMockServer();
+//
+//    public void startMockServer(int port, int delay) throws Exception {
+////        if(mockServer != null && mockServer.isAlive()) stopMockServer();
+//
+//        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("mockmap.json");
+//        String mappings = readStream(resourceAsStream);
+//        ArrayNode mappingsArr = (ArrayNode) mapper.readTree(mappings);
+//
+//        Map<String, SimpleMockServer.SimpleMockResponse> responses = new HashMap<String, SimpleMockServer.SimpleMockResponse>();
+//
+//        for (int i = 0; i < mappingsArr.size(); i++) {
+//            String location = mappingsArr.get(i).get("location").getTextValue();
+//            String response = mappingsArr.get(i).get("response").getTextValue();
+//
+//            InputStream s = getClass().getClassLoader().getResourceAsStream(response);
+//            SimpleMockServer.SimpleMockResponse simpleMockResponse = new SimpleMockServer.SimpleMockResponse();
+//            simpleMockResponse.setResponseContent(readStream(s));
+//            responses.put(location, simpleMockResponse);
+//        }
+//        mockServer = new SimpleMockServer(port, delay, "net.mrkzea.mockserver");
+//    }
 
-        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("mockmap.json");
-        String mappings = readStream(resourceAsStream);
-        ArrayNode mappingsArr = (ArrayNode)mapper.readTree(mappings);
 
-        Map<String, SimpleMockServer.MockResponse> responses = new HashMap<String, SimpleMockServer.MockResponse>();
-
-        for(int i = 0 ; i < mappingsArr.size() ; i++){
-            String location = mappingsArr.get(i).get("location").getTextValue();
-            String response = mappingsArr.get(i).get("response").getTextValue();
-
-            InputStream s = getClass().getClassLoader().getResourceAsStream(response);
-            SimpleMockServer.MockResponse mockResponse = new SimpleMockServer.MockResponse();
-            mockResponse.setContent(readStream(s));
-            responses.put(location, mockResponse);
-        }
-        mockServer = new SimpleMockServer(port, responses, delay);
-    }
 
 
     public static String readStream(InputStream in) {
@@ -121,6 +124,7 @@ public class SimpleMockServerTests {
         }
         return expectedBuff.toString();
     }
+
 
 
 
