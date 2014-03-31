@@ -1,7 +1,6 @@
 package net.mrkzea.mockserver;
 
 
-import com.google.common.base.Throwables;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 
