@@ -1,6 +1,7 @@
 package net.mrkzea.mockserver;
 
 
+import com.google.common.base.Throwables;
 import org.reflections.Reflections;
 import org.reflections.scanners.MethodAnnotationsScanner;
 
@@ -12,31 +13,29 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class SimpleMockServer extends Thread {
 
 
     public SimpleMockServer(int port, long responseDelay, String packages) {
 
-        if (serverStarted){
+        if (serverStarted) {
             return;
         }
         Reflections reflections = new Reflections(packages, new MethodAnnotationsScanner());
         annotatedMethods = reflections.getMethodsAnnotatedWith(MockServerConfig.class);
 
-        List<SimpleMockResponse> simpleMockResponses = new ArrayList<SimpleMockResponse>();
-        for (Method method : annotatedMethods) {
-            MockServerConfig annotation = method.getAnnotation(MockServerConfig.class);
-            MockResponse[] mocks = annotation.value();
-            for (MockResponse mock : mocks) {
-                String location = mock.url();
-                String response = mock.response();
-                String contentType = mock.contentType();
-                int status = mock.statusCode();
-                SimpleMockResponse simpleMockResponse = prepareResponse(location, contentType, response, status);
-                simpleMockResponses.add(simpleMockResponse);
-            }
-        }
+        List<List<SimpleMockResponse>> mapped =
+                annotatedMethods
+                        .stream()
+                        .map(a -> processConfig(a.getAnnotation(MockServerConfig.class).value()))
+                        .collect(Collectors.toList());
+
+        List<SimpleMockResponse> simpleMockResponses = mapped
+                .stream()
+                .flatMap(list -> list.stream())
+                .collect(Collectors.toList());
 
         setMockHttpServerResponses(simpleMockResponses.toArray(new SimpleMockResponse[simpleMockResponses.size()]));
 
@@ -52,8 +51,17 @@ public class SimpleMockServer extends Thread {
     }
 
 
+    private List<SimpleMockResponse> processConfig(MockResponse[] mocks) {
+        return Arrays.asList(mocks)
+                .stream()
+                .map(m -> prepareResponse(m.url(), m.contentType(), m.response(), m.statusCode()))
+                .collect(Collectors.toList());
+    }
+
+
+
     public synchronized void startServer() {
-        if (serverStarted){
+        if (serverStarted) {
             return;
         }
         start();
@@ -73,8 +81,6 @@ public class SimpleMockServer extends Thread {
 
 
 
-
-
     public SimpleMockResponse prepareResponse(String location, String contentType, String expectedResponseFile, int status) {
         SimpleMockResponse mockResponse = new SimpleMockResponse();
         mockResponse.setResponseContentType(contentType);
@@ -89,13 +95,6 @@ public class SimpleMockServer extends Thread {
         mockResponse.setResponseCode(status);
         return mockResponse;
     }
-
-    public void processResponses(){
-
-    }
-
-//    public void test(String location, ){
-//    }
 
 
 
@@ -165,7 +164,6 @@ public class SimpleMockServer extends Thread {
     }
 
 
-
     private Thread serverThread = null;
     private ServerSocket serverSocket = null;
     private volatile boolean serverStarted = false;
@@ -185,10 +183,6 @@ public class SimpleMockServer extends Thread {
     private String packages; // where the annotations are, for example "net.mrkzea.controller"
 
 
-
-
-
-
     private synchronized void waitForServerToStop() {
         try {
             wait(5000);
@@ -198,12 +192,10 @@ public class SimpleMockServer extends Thread {
     }
 
 
-
     public void run() {
         serverThread = Thread.currentThread();
         executeLoop();
     }
-
 
 
     private void executeLoop() {
@@ -241,7 +233,6 @@ public class SimpleMockServer extends Thread {
     }
 
 
-
     public synchronized void stopServer() {
         requestUrl = null;
         mockHttpServerResponses = null;
@@ -259,7 +250,6 @@ public class SimpleMockServer extends Thread {
             e.printStackTrace();
         }
     }
-
 
 
     private class HttpProcessor {
@@ -366,6 +356,9 @@ public class SimpleMockServer extends Thread {
             requestContent.write(bytes);
         }
 
+
+
+
         private void processChunkedContent(InputStream is) throws IOException {
             requestContent.write("".getBytes());
             byte[] chunk = null;
@@ -389,6 +382,7 @@ public class SimpleMockServer extends Thread {
                 readLine(is);
             }
         }
+
 
         private byte[] readLine(InputStream is) throws IOException {
             int n;
@@ -483,11 +477,11 @@ public class SimpleMockServer extends Thread {
             addServerResponseHeaders();
             System.out.println(requestUrl);
             if (mockHttpServerResponses.get(requestUrl) != null) {
-                for (String header : mockHttpServerResponses.get(requestUrl).getResponseHeaders().keySet()) {
-                    os.write((header + ": " + mockHttpServerResponses.get(requestUrl)
-                            .getResponseHeaders().get(header)).getBytes());
-                    os.write(NEW_LINE);
-                }
+
+                mockHttpServerResponses.get(requestUrl).getResponseHeaders().keySet()
+                        .stream()
+                        .forEach(header -> writeToOutput(os, header));
+
                 os.write(NEW_LINE);
             }
         }
@@ -501,6 +495,18 @@ public class SimpleMockServer extends Thread {
                 mockResponseHeaders.put("Server", "Mock HTTP Server v1.0");
                 mockResponseHeaders.put("Connection", "closed");
             }
+        }
+    }
+
+    private void writeToOutput(OutputStream os, String header) {
+        try {
+            os.write((header + ": " + mockHttpServerResponses.get(requestUrl)
+                    .getResponseHeaders()
+                    .get(header))
+                    .getBytes());
+            os.write(NEW_LINE);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to write to IO", e);
         }
     }
 
