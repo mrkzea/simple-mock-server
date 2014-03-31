@@ -18,6 +18,9 @@ public class SimpleMockServer extends Thread {
 
     public SimpleMockServer(int port, long responseDelay, String packages) {
 
+        if (serverStarted){
+            return;
+        }
         Reflections reflections = new Reflections(packages, new MethodAnnotationsScanner());
         annotatedMethods = reflections.getMethodsAnnotatedWith(MockServerConfig.class);
 
@@ -71,6 +74,7 @@ public class SimpleMockServer extends Thread {
 
 
 
+
     public SimpleMockResponse prepareResponse(String location, String contentType, String expectedResponseFile, int status) {
         SimpleMockResponse mockResponse = new SimpleMockResponse();
         mockResponse.setResponseContentType(contentType);
@@ -86,6 +90,12 @@ public class SimpleMockServer extends Thread {
         return mockResponse;
     }
 
+    public void processResponses(){
+
+    }
+
+//    public void test(String location, ){
+//    }
 
 
 

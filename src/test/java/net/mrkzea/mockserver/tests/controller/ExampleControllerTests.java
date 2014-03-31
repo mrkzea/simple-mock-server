@@ -4,6 +4,7 @@ package net.mrkzea.mockserver.tests.controller;
 import net.mrkzea.mockserver.MockResponse;
 import net.mrkzea.mockserver.MockServerConfig;
 import net.mrkzea.mockserver.SimpleMockServer;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,16 +13,18 @@ public class ExampleControllerTests {
 
     ExampleController controller;
 
+    SimpleMockServer mockServer;
 
     @Before
     public void setUp(){
-        new SimpleMockServer(12345, 20, "net.mrkzea.mockserver");
+        mockServer = new SimpleMockServer(12345, 20, "net.mrkzea.mockserver");
         controller = new ExampleController("http://localhost:12345");
-        // here mock your actual http client to call your mock server instead of actual end rest endpoint
-
-        // then start mock server
+    }
 
 
+    @After
+    public void clean(){
+        mockServer.stopServer();
     }
 
 

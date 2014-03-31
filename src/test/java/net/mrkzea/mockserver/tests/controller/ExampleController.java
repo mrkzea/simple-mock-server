@@ -1,8 +1,7 @@
 package net.mrkzea.mockserver.tests.controller;
 
 
-
-
+import net.mrkzea.mockserver.SimpleHttpClient;
 
 public class ExampleController {
 

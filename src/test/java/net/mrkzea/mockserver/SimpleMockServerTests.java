@@ -1,48 +1,72 @@
 package net.mrkzea.mockserver;
 
 import junit.framework.Assert;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.node.ArrayNode;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.*;
+import static net.mrkzea.mockserver.SimpleHttpClient.*;
 
 public class SimpleMockServerTests {
 
     public static final String HOST = "http://localhost:10000";
 
-    protected ObjectMapper mapper;
-
-    public SimpleMockServerTests() {
-        mapper = new ObjectMapper();
-        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
-    }
-
     private static SimpleMockServer mockServer;
 
 
-//    @Before
-//    public void setUp() throws Exception {
-//        if (mockServer == null) {
-//            startMockServer(10000, 200);
-//        }
-//    }
+    @Before
+    public void setUp() {
+        mockServer = new SimpleMockServer(10000, 20, "net.mrkzea.mockserver");
+    }
+
+    @After
+    public void clean() {
+        mockServer.stopServer();
+    }
 
     public void assertTest(String url, String expectedFile) {
-        String request = requestUrl(url);
+        String request = httpGet(HOST + url);
         Assert.assertEquals(readStream(getClass().getClassLoader().getResourceAsStream(expectedFile)), request);
     }
 
 
     @Test
+    @MockServerConfig({
+            @MockResponse(
+                    url = "/server/response1.json",
+                    response = "mocks/response1.json"),
+            @MockResponse(
+                    url = "/server/response2.json",
+                    response = "mocks/response2.json"),
+            @MockResponse(
+                    url = "/server/response3.json",
+                    response = "mocks/response3.json"),
+            @MockResponse(
+                    url = "/server/response4.json",
+                    response = "mocks/response4.json"),
+            @MockResponse(
+                    url = "/server/response5.json",
+                    response = "mocks/response5.json"),
+            @MockResponse(
+                    url = "/server/response6.json",
+                    response = "mocks/response6.json"),
+            @MockResponse(
+                    url = "/server/response7.json",
+                    response = "mocks/response7.json"),
+            @MockResponse(
+                    url = "/server/response8.json",
+                    response = "mocks/response8.json"),
+            @MockResponse(
+                    url = "/server/response9.json",
+                    response = "mocks/response9.json"),
+            @MockResponse(
+                    url = "/server/response10.json",
+                    response = "mocks/response10.json")
+    })
     public void testSingleThreadedServer() {
         File dir = new File(getClass().getClassLoader().getResource("mocks").getFile());
         String[] children = dir.list();
@@ -57,96 +81,42 @@ public class SimpleMockServerTests {
         int nrOfThreads = 10;
         final CountDownLatch startGate = new CountDownLatch(1);
         final CountDownLatch endGate = new CountDownLatch(nrOfThreads);
+        Set<Future<Boolean>> futures = new HashSet<Future<Boolean>>();
 
+        ExecutorService executor = Executors.newFixedThreadPool(nrOfThreads);
         for (int i = 0; i < nrOfThreads; i++) {
-            Thread t = new Thread() {
-                public void run() {
+            Callable callable = new Callable() {
+                @Override
+                public Object call() throws Exception {
                     try {
                         startGate.await();
-                        try {
-                            testSingleThreadedServer();
-                        } finally {
-                            endGate.countDown();
-                        }
+                        testSingleThreadedServer();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
+                        return false;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return false;
+                    } finally {
+                        endGate.countDown();
                     }
+                    return true;
                 }
             };
-            t.start();
+            futures.add(executor.submit(callable));
         }
         long start = System.currentTimeMillis();
         startGate.countDown();
         endGate.await();
         long duration = System.currentTimeMillis() - start;
         System.out.println(duration);
-    }
 
-
-
-//
-//    public void startMockServer(int port, int delay) throws Exception {
-////        if(mockServer != null && mockServer.isAlive()) stopMockServer();
-//
-//        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream("mockmap.json");
-//        String mappings = readStream(resourceAsStream);
-//        ArrayNode mappingsArr = (ArrayNode) mapper.readTree(mappings);
-//
-//        Map<String, SimpleMockServer.SimpleMockResponse> responses = new HashMap<String, SimpleMockServer.SimpleMockResponse>();
-//
-//        for (int i = 0; i < mappingsArr.size(); i++) {
-//            String location = mappingsArr.get(i).get("location").getTextValue();
-//            String response = mappingsArr.get(i).get("response").getTextValue();
-//
-//            InputStream s = getClass().getClassLoader().getResourceAsStream(response);
-//            SimpleMockServer.SimpleMockResponse simpleMockResponse = new SimpleMockServer.SimpleMockResponse();
-//            simpleMockResponse.setResponseContent(readStream(s));
-//            responses.put(location, simpleMockResponse);
-//        }
-//        mockServer = new SimpleMockServer(port, delay, "net.mrkzea.mockserver");
-//    }
-
-
-
-
-    public static String readStream(InputStream in) {
-        StringBuffer expectedBuff = new StringBuffer();
-
-        try {
-            BufferedReader i = new BufferedReader(new InputStreamReader(in, "UTF8"));
-            String line;
-            while ((line = i.readLine()) != null) {
-                expectedBuff.append(line);
-            }
-            i.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (Future<Boolean> future : futures) {
+            Assert.assertTrue(future.get());
         }
-        return expectedBuff.toString();
     }
 
 
 
 
-    public String requestUrl(String url) {
-        StringBuffer buff = new StringBuffer();
-
-        try {
-            URL server = new URL(HOST + url);
-            URLConnection sc = server.openConnection();
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(
-                            sc.getInputStream()));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null)
-                buff.append(inputLine);
-            in.close();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return buff.toString();
-    }
 }
