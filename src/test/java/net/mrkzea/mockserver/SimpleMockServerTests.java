@@ -6,9 +6,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
+
 import static net.mrkzea.mockserver.SimpleHttpClient.*;
 
 public class SimpleMockServerTests {
@@ -35,35 +39,35 @@ public class SimpleMockServerTests {
 
 
     @Test
-    @MockServerConfig({
-            @MockResponse(
+    @SimpleMockServer.MockServerConfig({
+            @SimpleMockServer.MockResponse(
                     url = "/server/response1.json",
                     response = "mocks/response1.json"),
-            @MockResponse(
+            @SimpleMockServer.MockResponse(
                     url = "/server/response2.json",
                     response = "mocks/response2.json"),
-            @MockResponse(
+            @SimpleMockServer.MockResponse(
                     url = "/server/response3.json",
                     response = "mocks/response3.json"),
-            @MockResponse(
+            @SimpleMockServer.MockResponse(
                     url = "/server/response4.json",
                     response = "mocks/response4.json"),
-            @MockResponse(
+            @SimpleMockServer.MockResponse(
                     url = "/server/response5.json",
                     response = "mocks/response5.json"),
-            @MockResponse(
+            @SimpleMockServer.MockResponse(
                     url = "/server/response6.json",
                     response = "mocks/response6.json"),
-            @MockResponse(
+            @SimpleMockServer.MockResponse(
                     url = "/server/response7.json",
                     response = "mocks/response7.json"),
-            @MockResponse(
+            @SimpleMockServer.MockResponse(
                     url = "/server/response8.json",
                     response = "mocks/response8.json"),
-            @MockResponse(
+            @SimpleMockServer.MockResponse(
                     url = "/server/response9.json",
                     response = "mocks/response9.json"),
-            @MockResponse(
+            @SimpleMockServer.MockResponse(
                     url = "/server/response10.json",
                     response = "mocks/response10.json")
     })
@@ -117,6 +121,16 @@ public class SimpleMockServerTests {
     }
 
 
+    @Test
+    public void testAnnotations() {
+        Set<Method> methodsWithinPackage = mockServer.getMethodsWithinPackage("net.mrkzea.mockserver");
+        System.out.println(methodsWithinPackage);
+
+        for (Method m : methodsWithinPackage) {
+            SimpleMockServer.MockResponse[] value = (SimpleMockServer.MockResponse[]) m.getAnnotation(SimpleMockServer.MockServerConfig.class).value();
+            System.out.println(value);
+        }
+    }
 
 
 }

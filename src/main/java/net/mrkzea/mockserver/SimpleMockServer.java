@@ -1,15 +1,14 @@
 package net.mrkzea.mockserver;
 
 
-import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
-
 import javax.net.ServerSocketFactory;
 import java.io.*;
+import java.lang.annotation.*;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -17,25 +16,35 @@ import java.util.stream.Collectors;
 public class SimpleMockServer extends Thread {
 
 
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface MockServerConfig {
+        MockResponse[] value();
+    }
+
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface MockResponse {
+        String url();
+
+        String response();
+
+        int statusCode() default 200;
+
+        String contentType() default "application/json";
+
+    }
+
     public SimpleMockServer(int port, long responseDelay, String packages) {
 
         if (serverStarted) {
             return;
         }
-        Reflections reflections = new Reflections(packages, new MethodAnnotationsScanner());
-        annotatedMethods = reflections.getMethodsAnnotatedWith(MockServerConfig.class);
+        annotatedMethods = getMethodsWithinPackage(packages);//getMethodsAnnotatedWith(SimpleMockServer.MockServerConfig.class)
 
-        List<List<SimpleMockResponse>> mapped =
-                annotatedMethods
-                        .stream()
-                        .map(a -> processConfig(a.getAnnotation(MockServerConfig.class).value()))
-                        .collect(Collectors.toList());
-
-        List<SimpleMockResponse> simpleMockResponses = mapped
-                .stream()
-                .flatMap(list -> list.stream())
-                .collect(Collectors.toList());
-
+        List<List<SimpleMockResponse>> mapped =annotatedMethods.stream().map(a -> processConfig(a.getAnnotation(SimpleMockServer.MockServerConfig.class).value())).collect(Collectors.toList());
+        List<SimpleMockResponse> simpleMockResponses = mapped.stream().flatMap(list -> list.stream()).collect(Collectors.toList());
         setMockHttpServerResponses(simpleMockResponses.toArray(new SimpleMockResponse[simpleMockResponses.size()]));
 
         this.responseDelay = responseDelay;
@@ -58,7 +67,6 @@ public class SimpleMockServer extends Thread {
     }
 
 
-
     public synchronized void startServer() {
         if (serverStarted) {
             return;
@@ -69,7 +77,6 @@ public class SimpleMockServer extends Thread {
     }
 
 
-
     private synchronized void waitForServerToStart() {
         try {
             wait(5000);
@@ -77,7 +84,6 @@ public class SimpleMockServer extends Thread {
             throw new RuntimeException(e);
         }
     }
-
 
 
     public SimpleMockResponse prepareResponse(String location, String contentType, String expectedResponseFile, int status) {
@@ -96,20 +102,13 @@ public class SimpleMockServer extends Thread {
     }
 
 
-
     public static class SimpleMockResponse {
 
-        private int responseCode = 200;
-        private Map<String, String> responseHeaders = new HashMap<String, String>();
-        private byte[] responseContent = "received message".getBytes();
-        private String responseContentType = "application/json;charset=utf-8";
-        private boolean responseContentEchoRequest;
-        private String responseUrl;
-
-        public void setResponseHeaders(Map<String, String> headers) {
-            responseHeaders.clear();
-            responseHeaders.putAll(headers);
-        }
+        public int responseCode = 200;
+        public Map<String, String> responseHeaders = new HashMap<String, String>();
+        public byte[] responseContent = "received message".getBytes();
+        public String responseContentType = "application/json;charset=utf-8";
+        public String responseUrl;
 
         public void setMockResponseHeader(String name, String value) {
             responseHeaders.put(name, value);
@@ -146,10 +145,6 @@ public class SimpleMockServer extends Thread {
 
         public String getResponseContentType() {
             return responseContentType;
-        }
-
-        public boolean getResponseContentEchoRequest() {
-            return responseContentEchoRequest;
         }
 
         public void setResponseUrl(String url) {
@@ -334,11 +329,6 @@ public class SimpleMockServer extends Thread {
             } else {
                 processRegularContent(is);
             }
-
-            if (mockHttpServerResponses.get(requestUrl).getResponseContentEchoRequest()) {
-                mockHttpServerResponses.get(requestUrl).setResponseContent(requestContent.toByteArray());
-            }
-
         }
 
         private void processRegularContent(InputStream is) throws IOException {
@@ -354,8 +344,6 @@ public class SimpleMockServer extends Thread {
             is.read(bytes);
             requestContent.write(bytes);
         }
-
-
 
 
         private void processChunkedContent(InputStream is) throws IOException {
@@ -586,4 +574,83 @@ public class SimpleMockServer extends Thread {
     public int getNrOfRequests() {
         return nrOfRequests.get();
     }
+
+
+    public Set<Method> getMethodsWithinPackage(String pack) {
+        Class[] classes;
+        try {
+            classes = getClasses(pack);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Set<Set<Method>> collected = Arrays.asList(classes)
+                .stream()
+                .map(c -> getMethodsFromTypeAnnotatedWith(c, MockServerConfig.class))
+                .collect(Collectors.toSet());
+
+        return collected.stream().flatMap(s -> s.stream()).collect(Collectors.toSet());
+    }
+
+
+    public Set<Method> getMethodsFromTypeAnnotatedWith(final Class<?> type, final Class<? extends Annotation> annotation) {
+        final Set<Method> methods = new HashSet<>();
+        Class<?> clazz = type;
+        while (clazz != Object.class && clazz != null) {
+            Arrays.asList(clazz.getDeclaredMethods()).stream().filter(m -> annotation == null || m.isAnnotationPresent(annotation)).forEach(m -> methods.add(m));
+            clazz = clazz.getSuperclass();
+        }
+        return methods;
+    }
+
+
+
+    private Class[] getClasses(String packageName)
+            throws ClassNotFoundException, IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        assert classLoader != null;
+        String path = packageName.replace('.', '/');
+        Enumeration<URL> resources = classLoader.getResources(path);
+        List<File> dirs = new ArrayList<File>();
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            dirs.add(new File(resource.getFile()));
+        }
+        ArrayList<Class> classes = new ArrayList<>();
+        dirs.stream().forEach(d -> classes.addAll(findClasses(d,packageName)));
+        return classes.toArray(new Class[classes.size()]);
+    }
+
+
+    private static List<Class> findClasses(File directory, String packageName)  {
+        List<Class> classes = new ArrayList<>();
+        if (!directory.exists()) {
+            return classes;
+        }
+//        Arrays.asList(directory.listFiles())
+//                .stream()
+//                .filter(f -> f.isDirectory()).forEach(file -> file.isDirectory() ? classes.addAll(findClasses(file, packageName + "." + file.getName())));
+//
+//        Arrays.asList(directory.listFiles()).stream().filter(f -> f.isDirectory()).forEach(file -> classes.addAll(findClasses(file, packageName + "." + file.getName())));
+
+
+        File[] files = directory.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                assert !file.getName().contains(".");
+                classes.addAll(findClasses(file, packageName + "." + file.getName()));
+            } else if (file.getName().endsWith(".class")) {
+                try {
+                    classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return classes;
+    }
+
+
+
 }

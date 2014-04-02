@@ -1,8 +1,6 @@
 package net.mrkzea.mockserver.tests.controller;
 
 
-import net.mrkzea.mockserver.MockResponse;
-import net.mrkzea.mockserver.MockServerConfig;
 import net.mrkzea.mockserver.SimpleMockServer;
 import org.junit.After;
 import org.junit.Before;
@@ -29,8 +27,8 @@ public class ExampleControllerTests {
 
 
     @Test
-    @MockServerConfig({
-            @MockResponse(
+    @SimpleMockServer.MockServerConfig({
+            @SimpleMockServer.MockResponse(
                     url = "/api/path/which/you/are/testing/response1.json",
                     response = "mocks/response1.json")})
     public void testSomeRestResponse(){
