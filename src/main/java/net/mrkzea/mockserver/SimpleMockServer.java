@@ -43,7 +43,7 @@ public class SimpleMockServer extends Thread {
         }
         annotatedMethods = getMethodsWithinPackage(packages);//getMethodsAnnotatedWith(SimpleMockServer.MockServerConfig.class)
 
-        List<List<SimpleMockResponse>> mapped =annotatedMethods.stream().map(a -> processConfig(a.getAnnotation(SimpleMockServer.MockServerConfig.class).value())).collect(Collectors.toList());
+        List<List<SimpleMockResponse>> mapped = annotatedMethods.stream().map(a -> processConfig(a.getAnnotation(SimpleMockServer.MockServerConfig.class).value())).collect(Collectors.toList());
         List<SimpleMockResponse> simpleMockResponses = mapped.stream().flatMap(list -> list.stream()).collect(Collectors.toList());
         setMockHttpServerResponses(simpleMockResponses.toArray(new SimpleMockResponse[simpleMockResponses.size()]));
 
@@ -605,7 +605,6 @@ public class SimpleMockServer extends Thread {
     }
 
 
-
     private Class[] getClasses(String packageName)
             throws ClassNotFoundException, IOException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -618,39 +617,40 @@ public class SimpleMockServer extends Thread {
             dirs.add(new File(resource.getFile()));
         }
         ArrayList<Class> classes = new ArrayList<>();
-        dirs.stream().forEach(d -> classes.addAll(findClasses(d,packageName)));
+        dirs.stream().forEach(d -> classes.addAll(findClasses(d, packageName)));
         return classes.toArray(new Class[classes.size()]);
     }
 
 
-    private static List<Class> findClasses(File directory, String packageName)  {
+    private List<Class> findClasses(File directory, String packageName) {
         List<Class> classes = new ArrayList<>();
         if (!directory.exists()) {
             return classes;
         }
-//        Arrays.asList(directory.listFiles())
-//                .stream()
-//                .filter(f -> f.isDirectory()).forEach(file -> file.isDirectory() ? classes.addAll(findClasses(file, packageName + "." + file.getName())));
-//
-//        Arrays.asList(directory.listFiles()).stream().filter(f -> f.isDirectory()).forEach(file -> classes.addAll(findClasses(file, packageName + "." + file.getName())));
-
 
         File[] files = directory.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                assert !file.getName().contains(".");
-                classes.addAll(findClasses(file, packageName + "." + file.getName()));
-            } else if (file.getName().endsWith(".class")) {
-                try {
-                    classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
+
+        Arrays.asList(directory.listFiles())
+                .stream()
+                .filter(f -> f.isDirectory())
+                .forEach(f -> classes.addAll(findClasses(f, packageName + "." + f.getName())));
+
+        Arrays.asList(files)
+                .stream()
+                .filter(file -> isFileAClass(file))
+                .forEach(file -> {
+                    try {
+                        classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+                    } catch (ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
         return classes;
     }
 
-
+    private boolean isFileAClass(File file) {
+        return file.getName().endsWith(".class");
+    }
 
 }
