@@ -20,6 +20,6 @@ json response. You would pass your mock client to the controller and configure i
      }
 
 
-All you need is one class. SimpleMockServer. All the code is intentionally put in a single file to save you from
-including any dependencies. It doesn't require any external dependencies either. Uses Lambdas and requires Java8 for compilation.
+All you need is one class. SimpleMockServer. All the code is intentionally put in a single file.
+It doesn't require any external dependencies either. Uses Lambdas and requires Java8 for compilation.
 
