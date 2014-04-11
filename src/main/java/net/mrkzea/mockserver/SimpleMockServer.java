@@ -27,21 +27,18 @@ public class SimpleMockServer extends Thread {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface MockResponse {
         String url();
-
         String response();
-
         int statusCode() default 200;
-
         String contentType() default "application/json";
-
     }
+
 
     public SimpleMockServer(int port, long responseDelay, String packages) {
 
         if (serverStarted) {
             return;
         }
-        annotatedMethods = getMethodsWithinPackage(packages);//getMethodsAnnotatedWith(SimpleMockServer.MockServerConfig.class)
+        annotatedMethods = getMethodsWithinPackage(packages);
 
         List<List<SimpleMockResponse>> mapped = annotatedMethods.stream().map(a -> processConfig(a.getAnnotation(SimpleMockServer.MockServerConfig.class).value())).collect(Collectors.toList());
         List<SimpleMockResponse> simpleMockResponses = mapped.stream().flatMap(list -> list.stream()).collect(Collectors.toList());
